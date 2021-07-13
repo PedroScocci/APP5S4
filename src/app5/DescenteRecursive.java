@@ -28,32 +28,27 @@ public class DescenteRecursive {
      */
     public ElemAST AnalSynt( ) {
         terminal = lexique.prochainTerminal();
-        return E();
+        return X();
     }
 
 
     // Methode pour chaque symbole non-terminal de la grammaire retenue
-    private ElemAST E() {
+    private ElemAST X() {
         ElemAST n1, n2;
-        n1 = T();
+        n1 = Y();
         if(terminal.type == TypeUL.operateur) {
-            terminal = lexique.prochainTerminal();
-            n2 = E();
-            n1 = new NoeudAST(n1, n2, "+");
+            if(terminal.chaine == "+") {
+                terminal = lexique.prochainTerminal();
+                n2 = X();
+                n1 = new NoeudAdditionAST(n1, n2, "+");
+            }
+            else if(terminal.chaine == "-") {
+                terminal = lexique.prochainTerminal();
+                n2 = X();
+                n1 = new NoeudSoustractionAST(n1, n2, "-");
+            }
         }
         return n1;
-    }
-
-    private ElemAST T() {
-        FeuilleAST feuille = null;
-        if(terminal.type == TypeUL.operande) {
-            feuille = new FeuilleAST(terminal);
-            terminal = lexique.prochainTerminal();
-        }
-        else {
-            ErreurSynt();
-        }
-        return feuille;
     }
 
 
