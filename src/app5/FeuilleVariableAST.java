@@ -6,4 +6,11 @@ public class FeuilleVariableAST extends FeuilleAST{
     public FeuilleVariableAST(Terminal terminal ) {  // avec arguments
         super(terminal);
     }
+
+    /** Lecture de chaine de caracteres correspondant a la feuille d'AST
+     */
+    public String LectAST( ) {
+        //
+        return terminal.chaine;
+    }
 }

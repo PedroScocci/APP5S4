@@ -64,7 +64,11 @@ public class AnalLex {
                             chaine += c;
                         }
                         else {
-                            throw new LexicalException("(Caractere:" + "'" + c + "' colonne:" + readPnt + "): Caratere non-supporte");
+                            if(c >= 97 && c <= 122) {
+                                throw ErreurLex(c, "Une variable doit commencer par une lettre majuscule.");
+                            } else {
+                                throw ErreurLex(c, "Caractere interdit.");
+                            }
                         }
                         break;
 
@@ -113,14 +117,17 @@ public class AnalLex {
                             etat = 3;
                         }
                         else {
-                            //ErreurLex();
-                            throw new LexicalException("(Caractere:" + "'" + c + "' colonne:" + readPnt + "): Deux underscores de suite.");
+                            if(c == '_') {
+                                throw ErreurLex(c, "Deux underscores de suite interdit.");
+                            }
+                            else {
+                                throw ErreurLex(c, "Une variable ne peut finir que par une lettre.");
+                            }
                         }
                         break;
                 }
                 if(!resteTerminal() && etat == 4) {
-                    //ErreurLex();
-                    throw new LexicalException("(Caractere:" + "'" + c + "' colonne:" + readPnt + "): Une variable ne peut pas finir par un underscore.");
+                    throw ErreurLex(c, "Une variable ne peut finir que par une lettre.");
                 }
             }
         }
@@ -134,8 +141,8 @@ public class AnalLex {
 
     /** ErreurLex() envoie un message d'erreur lexicale
      */
-    public void ErreurLex() {
-        System.out.println("Erreur lexicale: Caractere " + readPnt);
+    public LexicalException ErreurLex(char c, String message) {
+        return new LexicalException("(Caractere:" + "'" + c + "' colonne:" + readPnt + "): " + message);
     }
 
 
@@ -157,7 +164,7 @@ public class AnalLex {
         Terminal t = null;
         while(lexical.resteTerminal()){
             t = lexical.prochainTerminal();
-            toWrite += t.chaine + "\n" ;  // toWrite contient le resultat
+            toWrite += t.type + ": "+ t.chaine + "\n" ;  // toWrite contient le resultat
         }				   //    d'analyse lexicale
         System.out.println(toWrite); 	// Ecriture de toWrite sur la console
         Writer w = new Writer(args[1],toWrite); // Ecriture de toWrite dans fichier args[1]

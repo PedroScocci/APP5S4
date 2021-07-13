@@ -11,4 +11,10 @@ public class FeuilleNombreAST extends FeuilleAST {
         super(terminal);
     }
 
+    /** Lecture de chaine de caracteres correspondant a la feuille d'AST
+     */
+    public String LectAST( ) {
+        //
+        return terminal.chaine;
+    }
 }
