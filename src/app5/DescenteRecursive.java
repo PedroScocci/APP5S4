@@ -37,12 +37,12 @@ public class DescenteRecursive {
         ElemAST n1, n2;
         n1 = Y();
         if(terminal.type == TypeUL.operateur) {
-            if(terminal.chaine == "+") {
+            if(terminal.chaine.equals("+")) {
                 terminal = lexique.prochainTerminal();
                 n2 = X();
                 n1 = new NoeudAdditionAST(n1, n2, "+");
             }
-            else if(terminal.chaine == "-") {
+            else if(terminal.chaine.equals("-")) {
                 terminal = lexique.prochainTerminal();
                 n2 = X();
                 n1 = new NoeudSoustractionAST(n1, n2, "-");
@@ -55,15 +55,15 @@ public class DescenteRecursive {
         ElemAST n1, n2;
         n1 = Z();
         if(terminal.type == TypeUL.operateur) {
-            if(terminal.chaine == "*") {
+            if(terminal.chaine.equals("*")) {
                 terminal = lexique.prochainTerminal();
                 n2 = Y();
-                n1 = new NoeudMultiplicationAST(n1, n2, "+");
+                n1 = new NoeudMultiplicationAST(n1, n2, "*");
             }
-            else if(terminal.chaine == "/") {
+            else if(terminal.chaine.equals("/")) {
                 terminal = lexique.prochainTerminal();
                 n2 = Y();
-                n1 = new NoeudDivisionAST(n1, n2, "-");
+                n1 = new NoeudDivisionAST(n1, n2, "/");
             }
         }
         return n1;
@@ -82,18 +82,18 @@ public class DescenteRecursive {
             }
 
             terminal = lexique.prochainTerminal();
-        } else if (terminal.type == TypeUL.paranthese && terminal.chaine == "(") {
+        } else if (terminal.type == TypeUL.paranthese && terminal.chaine.equals("(")) {
             terminal = lexique.prochainTerminal();
 
             elemAST = X();
 
-            if(terminal.chaine == ")") {
+            if(terminal.chaine.equals(")")) {
                 terminal = lexique.prochainTerminal();
             } else {
                 //erreur
             }
         } else {
-            //erreur
+            ErreurSynt();
         }
 
         return elemAST;
