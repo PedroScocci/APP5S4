@@ -36,7 +36,7 @@ public class DescenteRecursive {
         try {
             elemAST = X();
             if(terminal.chaine.equals(")")) {
-                throw new SyntaxException("Lecture non fini");
+                throw new SyntaxException("Il manque une parenthèse ouvrante à l'expression");
             }
         } catch (SyntaxException se) {
             System.err.println(se.toString());
