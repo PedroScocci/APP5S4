@@ -8,7 +8,7 @@ public class FeuilleAST extends ElemAST {
 
   // Attribut(s)
     Terminal terminal;
-    int val;
+    double val;
 
 
 /**Constructeur pour l'initialisation d'attribut(s)
@@ -21,7 +21,7 @@ public class FeuilleAST extends ElemAST {
 
   /** Evaluation de feuille d'AST
    */
-  public int EvalAST( ) {
+  public double EvalAST( ) {
     //
       return val;
   }

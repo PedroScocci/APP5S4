@@ -22,9 +22,9 @@ public class NoeudAST extends ElemAST {
  
   /** Evaluation de noeud d'AST
    */
-  public int EvalAST( ) {
+  public double EvalAST( ) {
      //
-    return elemG.EvalAST() + elemD.EvalAST();
+    return 1;
   }
 
 
