@@ -17,6 +17,13 @@ public class NoeudAdditionAST extends NoeudAST {
     public double EvalAST( ) {
         return elemG.EvalAST() + elemD.EvalAST();
     }
+
+    /** Lecture de noeud d'AST
+     */
+    public String LectAST( ) {
+        //
+        return "(" + elemG.LectAST() + " + " + elemD.LectAST() + ")";
+    }
 }
 
 

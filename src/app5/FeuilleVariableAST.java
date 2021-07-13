@@ -4,8 +4,8 @@ public class FeuilleVariableAST extends FeuilleAST{
     /**Constructeur pour l'initialisation d'attribut(s)
      */
     public FeuilleVariableAST(Terminal terminal ) {  // avec arguments
-        super(null);
+        super(new Terminal("1", TypeUL.operande));
         this.terminal = terminal;
-        this.val = 0;
+        this.val = 1;
     }
 }
