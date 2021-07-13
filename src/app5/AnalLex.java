@@ -6,9 +6,13 @@ package app5;
  */
 public class AnalLex {
 
-    // Attributs
+// Attributs:
 //  etats: 0 = initial
-//         1 = boucle
+//         1 = boucle nombre
+//         2 = Première majuscule
+//         3 = boucle lettres
+//         4 = détection _
+
     int etat;
     int readPnt = 0;
     String file;
@@ -44,11 +48,18 @@ public class AnalLex {
 
             switch (etat) {
                 case 0:
-                    if(c == '+') {
-                        return new Terminal("+", TypeUL.operateur);
+                    if(c == '+' || c == '-' || c == '*' || c == '/') {
+                        return new Terminal(String.valueOf(c), TypeUL.operateur);
                     }
-                    else if(c == '0' || c == '1'){
+                    else if(c == '(' || c == ')') {
+                        return new Terminal(String.valueOf(c), TypeUL.paranthese);
+                    }
+                    else if(c >= 48 && c <= 57){ //ASCII 48 = '0', 57 = '9'
                         etat = 1;
+                        chaine += c;
+                    }
+                    else if(c >= 65 && c <= 90){  //65 = 'A', 90 = 'Z'
+                        etat = 2;
                         chaine += c;
                     }
                     else {
@@ -58,7 +69,7 @@ public class AnalLex {
                     break;
 
                 case 1:
-                    if(c == '0' || c == '1') {
+                    if(c >= 48 && c <= 57){ //ASCII 48 = '0', 57 = '9'
                         chaine += c;
                     }
                     else {
@@ -66,6 +77,50 @@ public class AnalLex {
                         return new Terminal(chaine, TypeUL.operande);
                     }
                     break;
+
+                case 2:
+                    if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
+                        etat = 3;
+                        chaine += c;
+                    }
+                    else if(c == '_'){
+                        etat = 4;
+                        chaine += c;
+                    }
+                    else {
+                        readPnt--;
+                        return new Terminal(chaine, TypeUL.operande);
+                    }
+                    break;
+
+                case 3:
+                    if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
+                        chaine += c;
+                    }
+                    else if(c == '_'){
+                        etat = 4;
+                        chaine += c;
+                    }
+                    else {
+                        readPnt--;
+                        return new Terminal(chaine, TypeUL.operande);
+                    }
+                    break;
+
+                case 4:
+                    if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
+                        chaine += c;
+                        etat = 3;
+                    }
+                    else {
+                        ErreurLex();
+                        return new Terminal("Erreur", TypeUL.erreur);
+                    }
+                    break;
+            }
+            if(!resteTerminal() && etat == 4) {
+                ErreurLex();
+                return new Terminal("Erreur", TypeUL.erreur);
             }
         }
         return new Terminal(chaine, TypeUL.operande);

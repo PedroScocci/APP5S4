@@ -2,3 +2,4 @@
 ResultatLexical.txt
 ResultatSyntaxique.txt
 *.iml
+/out

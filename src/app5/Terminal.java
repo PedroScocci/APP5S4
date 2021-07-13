@@ -5,6 +5,7 @@ package app5;
 enum TypeUL {
   operateur,
   operande,
+  paranthese,
   erreur
 }
 
@@ -15,7 +16,7 @@ public class Terminal {
 
 // Constantes et attributs
 String chaine;
-TypeUL type; //0 = opérateur, 1 = opérande, 2 = erreur
+TypeUL type;
 
 
 /** Un ou deux constructeurs (ou plus, si vous voulez)
