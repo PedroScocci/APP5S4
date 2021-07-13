@@ -51,6 +51,24 @@ public class DescenteRecursive {
         return n1;
     }
 
+    private ElemAST Y() {
+        ElemAST n1, n2;
+        n1 = Z();
+        if(terminal.type == TypeUL.operateur) {
+            if(terminal.chaine == "*") {
+                terminal = lexique.prochainTerminal();
+                n2 = Y();
+                n1 = new NoeudMultiplicationAST(n1, n2, "+");
+            }
+            else if(terminal.chaine == "/") {
+                terminal = lexique.prochainTerminal();
+                n2 = Y();
+                n1 = new NoeudDivisionAST(n1, n2, "-");
+            }
+        }
+        return n1;
+    }
+
 
 
     /** ErreurSynt() envoie un message d'erreur syntaxique
