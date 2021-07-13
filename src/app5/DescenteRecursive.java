@@ -69,6 +69,35 @@ public class DescenteRecursive {
         return n1;
     }
 
+    private ElemAST Z() {
+        ElemAST elemAST = null;
+
+        if (terminal.type == TypeUL.operande) {
+            char c = terminal.chaine.charAt(0);
+
+            if(c >= 48 && c <= 57) {
+                elemAST = new FeuilleNombreAST(terminal);
+            } else {
+                elemAST = new FeuilleVariableAST(terminal);
+            }
+
+            terminal = lexique.prochainTerminal();
+        } else if (terminal.type == TypeUL.paranthese && terminal.chaine == "(") {
+            terminal = lexique.prochainTerminal();
+
+            elemAST = X();
+
+            if(terminal.chaine == ")") {
+                terminal = lexique.prochainTerminal();
+            } else {
+                //erreur
+            }
+        } else {
+            //erreur
+        }
+
+        return elemAST;
+    }
 
 
     /** ErreurSynt() envoie un message d'erreur syntaxique
