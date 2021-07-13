@@ -15,7 +15,7 @@ public class FeuilleAST extends ElemAST {
  */
   public FeuilleAST(Terminal terminal ) {  // avec arguments
     this.terminal = terminal;
-    this.val = Integer.parseInt(terminal.chaine);
+    try { this.val = Integer.parseInt(terminal.chaine); } catch (Exception e) { this.val = 1; }
   }
 
 

@@ -38,90 +38,95 @@ public class AnalLex {
     /** prochainTerminal() retourne le prochain terminal
      Cette methode est une implementation d'un AEF
      */
-    public Terminal prochainTerminal( ) {
-        chaine = "";
-        etat = 0;
+    public Terminal prochainTerminal( ){
+        try {
+            chaine = "";
+            etat = 0;
 
-        while(resteTerminal()) {
-            char c = file.charAt(readPnt);
-            readPnt++;
+            while(resteTerminal()) {
+                char c = file.charAt(readPnt);
+                readPnt++;
 
-            switch (etat) {
-                case 0:
-                    if(c == '+' || c == '-' || c == '*' || c == '/') {
-                        return new Terminal(String.valueOf(c), TypeUL.operateur);
-                    }
-                    else if(c == '(' || c == ')') {
-                        return new Terminal(String.valueOf(c), TypeUL.paranthese);
-                    }
-                    else if(c >= 48 && c <= 57){ //ASCII 48 = '0', 57 = '9'
-                        etat = 1;
-                        chaine += c;
-                    }
-                    else if(c >= 65 && c <= 90){  //65 = 'A', 90 = 'Z'
-                        etat = 2;
-                        chaine += c;
-                    }
-                    else {
-                        ErreurLex();
-                        return new Terminal("Erreur", TypeUL.erreur);
-                    }
-                    break;
+                switch (etat) {
+                    case 0:
+                        if(c == '+' || c == '-' || c == '*' || c == '/') {
+                            return new Terminal(String.valueOf(c), TypeUL.operateur);
+                        }
+                        else if(c == '(' || c == ')') {
+                            return new Terminal(String.valueOf(c), TypeUL.paranthese);
+                        }
+                        else if(c >= 48 && c <= 57){ //ASCII 48 = '0', 57 = '9'
+                            etat = 1;
+                            chaine += c;
+                        }
+                        else if(c >= 65 && c <= 90){  //65 = 'A', 90 = 'Z'
+                            etat = 2;
+                            chaine += c;
+                        }
+                        else {
+                            throw new LexicalException("(Caractere:" + "'" + c + "' colonne:" + readPnt + "): Caratere non-supporte");
+                        }
+                        break;
 
-                case 1:
-                    if(c >= 48 && c <= 57){ //ASCII 48 = '0', 57 = '9'
-                        chaine += c;
-                    }
-                    else {
-                        readPnt--;
-                        return new Terminal(chaine, TypeUL.operande);
-                    }
-                    break;
+                    case 1:
+                        if(c >= 48 && c <= 57){ //ASCII 48 = '0', 57 = '9'
+                            chaine += c;
+                        }
+                        else {
+                            readPnt--;
+                            return new Terminal(chaine, TypeUL.operande);
+                        }
+                        break;
 
-                case 2:
-                    if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
-                        etat = 3;
-                        chaine += c;
-                    }
-                    else if(c == '_'){
-                        etat = 4;
-                        chaine += c;
-                    }
-                    else {
-                        readPnt--;
-                        return new Terminal(chaine, TypeUL.operande);
-                    }
-                    break;
+                    case 2:
+                        if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
+                            etat = 3;
+                            chaine += c;
+                        }
+                        else if(c == '_'){
+                            etat = 4;
+                            chaine += c;
+                        }
+                        else {
+                            readPnt--;
+                            return new Terminal(chaine, TypeUL.operande);
+                        }
+                        break;
 
-                case 3:
-                    if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
-                        chaine += c;
-                    }
-                    else if(c == '_'){
-                        etat = 4;
-                        chaine += c;
-                    }
-                    else {
-                        readPnt--;
-                        return new Terminal(chaine, TypeUL.operande);
-                    }
-                    break;
+                    case 3:
+                        if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
+                            chaine += c;
+                        }
+                        else if(c == '_'){
+                            etat = 4;
+                            chaine += c;
+                        }
+                        else {
+                            readPnt--;
+                            return new Terminal(chaine, TypeUL.operande);
+                        }
+                        break;
 
-                case 4:
-                    if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
-                        chaine += c;
-                        etat = 3;
-                    }
-                    else {
-                        ErreurLex();
-                        return new Terminal("Erreur", TypeUL.erreur);
-                    }
-                    break;
+                    case 4:
+                        if((c >= 65 && c <= 90) || (c >= 97 && c <= 122)){  //65 = 'A', 90 = 'Z', 97 = 'a', 122 = 'z'
+                            chaine += c;
+                            etat = 3;
+                        }
+                        else {
+                            //ErreurLex();
+                            throw new LexicalException("(Caractere:" + "'" + c + "' colonne:" + readPnt + "): Deux underscores de suite.");
+                        }
+                        break;
+                }
+                if(!resteTerminal() && etat == 4) {
+                    //ErreurLex();
+                    throw new LexicalException("(Caractere:" + "'" + c + "' colonne:" + readPnt + "): Une variable ne peut pas finir par un underscore.");
+                }
             }
-            if(!resteTerminal() && etat == 4) {
-                ErreurLex();
-                return new Terminal("Erreur", TypeUL.erreur);
-            }
+        }
+        catch (LexicalException le) {
+            System.err.println(le.getMessage());
+            System.exit(1);
         }
         return new Terminal(chaine, TypeUL.operande);
     }
