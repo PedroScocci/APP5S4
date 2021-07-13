@@ -2,6 +2,7 @@ package app5;
 
 /** @author Ahmed Khoumsi */
 
+import javax.lang.model.util.ElementScanner6;
 import javax.management.Notification;
 
 /** Cette classe effectue l'analyse syntaxique
@@ -11,6 +12,7 @@ public class DescenteRecursive {
     // Attributs
     AnalLex lexique;
     Terminal terminal;
+    Terminal lastTerminal;
 
 
     /** Constructeur de DescenteRecursive :
@@ -28,39 +30,70 @@ public class DescenteRecursive {
      */
     public ElemAST AnalSynt( ) {
         terminal = lexique.prochainTerminal();
-        return X();
+
+        ElemAST elemAST = null;
+
+        try {
+            elemAST = X();
+            if(terminal.chaine.equals(")")) {
+                throw new SyntaxException("Lecture non fini");
+            }
+        } catch (SyntaxException se) {
+            System.err.println(se.toString());
+            System.exit(2);
+        }
+        return elemAST;
     }
 
 
     // Methode pour chaque symbole non-terminal de la grammaire retenue
-    private ElemAST X() {
+    private ElemAST X() throws SyntaxException{
         ElemAST n1, n2;
         n1 = Y();
+
         if(terminal.type == TypeUL.operateur) {
             if(terminal.chaine.equals("+")) {
+                lastTerminal = terminal;
                 terminal = lexique.prochainTerminal();
                 n2 = X();
                 n1 = new NoeudAdditionAST(n1, n2, "+");
             }
             else if(terminal.chaine.equals("-")) {
+                lastTerminal = terminal;
                 terminal = lexique.prochainTerminal();
                 n2 = X();
                 n1 = new NoeudSoustractionAST(n1, n2, "-");
+            } /*else {
+            throw new SyntaxException("Le(s) caractère(s) " + terminal.chaine +" n'est pas supporter");
+        }*/
+        } else if(!terminal.chaine.equals("")) {
+            if(terminal.type == TypeUL.operande && lastTerminal.type == TypeUL.operande) {
+                throw new SyntaxException("L'ul '" + lastTerminal.chaine +
+                        "' est une opérande et elle est suivi d'une autre ul de type opérande '" + terminal.chaine + "'");
+            } else if(terminal.chaine.equals("(") && lastTerminal.type == TypeUL.operande) {
+                throw new SyntaxException("L'ul '" + lastTerminal.chaine +
+                        "' est une opérande et elle est directement suivi de l'ul '" + terminal.chaine + "'");
+            } else if(lastTerminal.chaine.equals(")") && terminal.type == TypeUL.operande) {
+                throw new SyntaxException("L'ul '" + lastTerminal.chaine +
+                        "' est une parenthèse et elle est directement suivi de l'ul '" + terminal.chaine + "'");
             }
         }
+
         return n1;
     }
 
-    private ElemAST Y() {
+    private ElemAST Y() throws SyntaxException{
         ElemAST n1, n2;
         n1 = Z();
         if(terminal.type == TypeUL.operateur) {
             if(terminal.chaine.equals("*")) {
+                lastTerminal = terminal;
                 terminal = lexique.prochainTerminal();
                 n2 = Y();
                 n1 = new NoeudMultiplicationAST(n1, n2, "*");
             }
             else if(terminal.chaine.equals("/")) {
+                lastTerminal = terminal;
                 terminal = lexique.prochainTerminal();
                 n2 = Y();
                 n1 = new NoeudDivisionAST(n1, n2, "/");
@@ -69,7 +102,7 @@ public class DescenteRecursive {
         return n1;
     }
 
-    private ElemAST Z() {
+    private ElemAST Z() throws SyntaxException {
         ElemAST elemAST = null;
 
         if (terminal.type == TypeUL.operande) {
@@ -80,20 +113,23 @@ public class DescenteRecursive {
             } else {
                 elemAST = new FeuilleVariableAST(terminal);
             }
-
+            lastTerminal = terminal;
             terminal = lexique.prochainTerminal();
         } else if (terminal.type == TypeUL.paranthese && terminal.chaine.equals("(")) {
+            lastTerminal = terminal;
             terminal = lexique.prochainTerminal();
 
             elemAST = X();
 
             if(terminal.chaine.equals(")")) {
+                lastTerminal = terminal;
                 terminal = lexique.prochainTerminal();
             } else {
-                //erreur
+                throw new SyntaxException("Il manque une parenthèse fermante à l'expression");
             }
         } else {
-            ErreurSynt();
+            throw new SyntaxException("L'ul '"  + lastTerminal.chaine +"' n'est pas suivi d'une opérande, mais de l'ul '"
+            + terminal.chaine + "'");
         }
 
         return elemAST;
