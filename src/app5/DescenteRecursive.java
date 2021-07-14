@@ -69,13 +69,13 @@ public class DescenteRecursive {
         } else if(!terminal.chaine.equals("")) {
             if(terminal.type == TypeUL.operande && lastTerminal.type == TypeUL.operande) {
                 throw new SyntaxException("L'ul '" + lastTerminal.chaine +
-                        "' est une opérande et elle est suivi d'une autre ul de type opérande '" + terminal.chaine + "'");
+                        "' a la colonne:" + (lexique.readPnt-1) +  " est une opérande et elle est suivi d'une autre ul de type opérande '" + terminal.chaine + "'");
             } else if(terminal.chaine.equals("(") && lastTerminal.type == TypeUL.operande) {
                 throw new SyntaxException("L'ul '" + lastTerminal.chaine +
-                        "' est une opérande et elle est directement suivi de l'ul '" + terminal.chaine + "'");
+                        "' a la colonne:" + (lexique.readPnt-1) +  " est une opérande et elle est directement suivi de l'ul '" + terminal.chaine + "'");
             } else if(lastTerminal.chaine.equals(")") && terminal.type == TypeUL.operande) {
                 throw new SyntaxException("L'ul '" + lastTerminal.chaine +
-                        "' est une parenthèse et elle est directement suivi de l'ul '" + terminal.chaine + "'");
+                        "' a la colonne:" + (lexique.readPnt-1) +  " est une parenthèse et elle est directement suivi de l'ul '" + terminal.chaine + "'");
             }
         }
 
