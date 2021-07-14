@@ -164,9 +164,10 @@ public class AnalLex {
         Terminal t = null;
         while(lexical.resteTerminal()){
             t = lexical.prochainTerminal();
+            System.out.println(t.type + ": "+ t.chaine);
             toWrite += t.type + ": "+ t.chaine + "\n" ;  // toWrite contient le resultat
         }				   //    d'analyse lexicale
-        System.out.println(toWrite); 	// Ecriture de toWrite sur la console
+        //System.out.println(toWrite); 	// Ecriture de toWrite sur la console
         Writer w = new Writer(args[1],toWrite); // Ecriture de toWrite dans fichier args[1]
         System.out.println("Fin d'analyse lexicale");
     }

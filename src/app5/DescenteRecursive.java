@@ -128,7 +128,7 @@ public class DescenteRecursive {
                 throw new SyntaxException("Il manque une parenthèse fermante à l'expression");
             }
         } else {
-            throw new SyntaxException("L'ul '"  + lastTerminal.chaine +"' n'est pas suivi d'une opérande, mais de l'ul '"
+            throw new SyntaxException("L'ul '"  + lastTerminal.chaine +"' a la colonne:" + (lexique.readPnt-1) + " n'est pas suivi d'une opérande, mais de l'ul '"
             + terminal.chaine + "'");
         }
 
