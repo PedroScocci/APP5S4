@@ -38,6 +38,8 @@ public class DescenteRecursive {
             if(terminal.chaine.equals(")")) {
                 throw new SyntaxException("Il manque une parenthèse ouvrante à l'expression");
             }
+
+            System.out.println("Pour l'évaluation de l'AST, les variables ont une valeur de 1");
         } catch (SyntaxException se) {
             System.err.println(se.toString());
             System.exit(2);
